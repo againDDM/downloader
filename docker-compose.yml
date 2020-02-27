@@ -1,0 +1,11 @@
+version: "2"
+
+services:
+  application:
+    build:
+      context: ./
+    restart: always
+    tty: true
+    container_name: application
+    ports:
+    - "5000:5000"
