@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Downloader</title>
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-        <meta charset="utf-8" />
-    </head>
+<head>
+    <title>Downloader</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <meta charset="utf-8"/>
+</head>
 <body>
-    <div id="app">
-        <label>URL</label>
-        <input type="text" v-model="target" placeholder="Input url" class="form-control" />
-        <button v-on:click="addTask">Download</button>
-        <button v-on:click="deleteTask">Delete</button><br>
-        <p>{{current.tasks}}</p>
-        <p>{{current.result}}</p>
-        <p>{{current.status}}</p><br>
-        <button v-on:click="getTasks">ShowAll</button><br>
-        <p>{{latest.tasks}}</p>
-    </div>
-    <script src="https://unpkg.com/vue"></script>
-    <script src="main.js"></script>
-    </body>
+<div id="app">
+    <label>URL</label>
+    <input type="text" v-model="target" placeholder="Input url" class="form-control"/>
+    <button v-on:click="addTask">Download</button>
+    <button v-on:click="deleteTask">Delete</button>
+    <br>
+    <h3>Current</h3>
+    <p>{{ current.tasks }}</p>
+    <p>{{ current.result }}</p>
+    <p>{{ current.status }}</p><br>
+    <h3>Latest</h3>
+    <p>{{ latest.tasks }}</p>
+</div>
+<script src="https://unpkg.com/vue"></script>
+<script src="main.js"></script>
+</body>
 </html>
