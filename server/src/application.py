@@ -19,7 +19,7 @@ app.config.update(
     )
 )
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 ### <<<------ end of section ------>>>
@@ -92,7 +92,7 @@ def add_task(url):
             "UPDATE tasks SET timestamp=CURRENT_TIMESTAMP WHERE url=?",
             (url,)
             )
-        return jsonify({'result': 'exist', 'task': url}), 205
+        return jsonify({'result': 'exist', 'task': url}), 201
     else:
         return jsonify({'result': 'success', 'task': url}), 201
     finally:
@@ -113,7 +113,7 @@ def delete_task(url):
 @app.route('/')
 def root():
     """Redirict from root path to client static path."""
-    return redirect(                                        ### FUCKUP HERE <<<<<<<
+    return redirect(
         url_for(
             'send_js',
             path="index.html"
@@ -130,12 +130,18 @@ def send_js(path):
 
 @app.route('/api/tasks/', methods=['GET', 'POST', 'DELETE'])
 def handle_tasks():
+    """Methods router"""
     if request.method == 'GET':
         return show_tasks(app.config['PAGE_LIMIT'])
     if request.method == 'POST':
         return add_task(request.json['url'])
     elif request.method == 'DELETE':
         return delete_task(request.json['url'])
+
+@app.route('/ping', methods=['GET'])
+def ping_pong():
+    """sanity check route"""
+    return jsonify('pong!')
 
 ### <<<------ end of section ------>>>
 

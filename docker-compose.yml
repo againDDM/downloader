@@ -1,9 +1,9 @@
 version: "2"
 
 services:
-  application:
+  api-backend:
     build:
-      context: ./
+      context: server
     restart: always
     tty: true
     container_name: application
