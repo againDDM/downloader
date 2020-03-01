@@ -1,8 +1,11 @@
 <template>
-  <p>{{ message }}</p>
+  <div class="alert alert-primary" role="alert">
+    {{ text }}
+  </div>
 </template>
+
 <script>
 export default {
-  props: ['message'],
+  props: ['text'],
 };
 </script>

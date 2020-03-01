@@ -2,8 +2,8 @@
 import os
 import sqlite3
 import youtube_dl
-from flask import Flask, send_from_directory, \
-    redirect, request, g, jsonify, url_for
+from flask import Flask, url_for, \
+    redirect, request, g, jsonify
 from flask_cors import CORS
 
 
@@ -108,24 +108,6 @@ def delete_task(url):
 ### <<<------ end of section ------>>>
 
 ### >>> ROUTER SECTION <<<
-### --- static subsection ---
-
-@app.route('/')
-def root():
-    """Redirict from root path to client static path."""
-    return redirect(
-        url_for(
-            'send_js',
-            path="index.html"
-        ),
-        code=307
-    )
-
-@app.route('/static/<path:path>')
-def send_js(path):
-    """Send client to user."""
-    return send_from_directory('static', path)
-
 ### --- api subsection ---
 
 @app.route('/api/tasks/', methods=['GET', 'POST', 'DELETE'])

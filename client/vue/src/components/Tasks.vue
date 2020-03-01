@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-10">
-        <h3>Tasks</h3>
+        <h3 class="text-center">Tasks</h3>
         <hr>
         <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Input url" aria-label="Input url" aria-describedby="basic-addon2" v-model="target" >
@@ -10,15 +10,16 @@
                 <span class="input-group-text btn btn-success btn-sm" id="basic-addon2" v-on:click="addTask">Download</span>
             </div>
         </div>
-        <alert message="hi" variant="success"></alert>
-        <div class="text-center" v-if="in_progress">
-          <div class="spinner-border" role="status">
-            <span class="sr-only">Загрузка...</span>
+        <div class="text-center" style="height: 30px;">
+          <div class="spinner-border" role="status" v-if="in_progress">
+            <span class="sr-only">in progress...</span>
+          </div>
+          <div class="alert" v-bind:class="[message.type]" role="alert" v-else-if="message.show">
+            {{ message.text }}
           </div>
         </div>
-        <div class="text-center mt-1" v-else>
-        </div>
-        <h5>Your current tasks</h5>
+        <hr>
+        <h5 class="text-center">Your current tasks</h5>
         <table class="table table-hover">
           <thead>
             <tr>
@@ -51,6 +52,11 @@ export default {
     return {
       tasks: [],
       in_progress: false,
+      message: {
+        show: false,
+        text: 'TEST',
+        type: 'alert-primary'
+      },
       target: ''
     };
   },

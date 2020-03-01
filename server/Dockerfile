@@ -15,5 +15,4 @@ RUN DEBIAN_FRONTEND=noninteractive \
     apt clean
 EXPOSE 5000
 ADD src/application.py src/wsgi.py src/run.sh ./
-ADD src/static ./static
 CMD ["sh", "run.sh"]
