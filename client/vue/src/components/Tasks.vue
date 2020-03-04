@@ -7,7 +7,7 @@
         <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Input url" aria-label="Input url" aria-describedby="basic-addon2" v-model="target" >
             <div class="input-group-append">
-                <span class="input-group-text btn btn-success btn-sm" id="basic-addon2" v-on:click="addTask">Download</span>
+                <span class="input-group-text btn btn-success btn-sm" id="basic-addon2" v-on:click="addTask()">Download</span>
             </div>
         </div>
         <div class="text-center" style="height: 30px;">
@@ -55,37 +55,58 @@ export default {
       message: {
         show: false,
         text: 'TEST',
-        type: 'alert-primary'
+        type: 'alert-secondary'
       },
       target: ''
     };
   },
+  watch: {
+    'message.text': async function () {
+      await this.getTasks();
+    }
+  },
   methods: {
-    addTask: async function () {
+    addTask: async function (target) {
       this.in_progress = true;
-      const response = await fetch(
-          path, {
-            method: 'POST',
-            mode: 'cors',
-            headers: {'Content-Type': 'application/json',},
-            body: JSON.stringify({url: this.target}),
-          }
-        );
-      const json = await response.json();
-      this.target='';
+      try {
+        const response = await fetch(
+            path, {
+              method: 'POST',
+              mode: 'cors',
+              headers: {'Content-Type': 'application/json',},
+              body: JSON.stringify({url: this.target}),
+            }
+          );
+        const json = await response.json();
+        this.message.text = `${json.result}: ${json.task}`;
+        this.message.type = "alert-success";
+        this.target='';
+      } catch (err) {
+        this.message.text = `FAIL: ${target}`;
+        this.message.type = "alert-danger";
+      }
+      this.message.show = true;
       this.in_progress = false;
     },
     deleteTask: async function (target) {
       this.in_progress = true;
-      const response = await fetch(
-          path, {
-            method: 'DELETE',
-            mode: 'cors',
-            headers: {'Content-Type': 'application/json',},
-            body: JSON.stringify({url: target}),
-          }
-        );
-      const json = await response.json();
+      try {
+        const response = await fetch(
+            path, {
+              method: 'DELETE',
+              mode: 'cors',
+              headers: {'Content-Type': 'application/json',},
+              body: JSON.stringify({url: target}),
+            }
+          );
+        const json = await response.json();
+        this.message.text = `${json.result}: ${json.task}`;
+        this.message.type = "alert-warning";
+      } catch (err) {
+        this.message.text = `FAIL: ${target}`;
+        this.message.type = "alert-danger";
+      }
+      this.message.show = true;
       this.in_progress = false;
     },
     getTasks: async function () {
@@ -99,9 +120,6 @@ export default {
   },
   created() {
     this.getTasks();
-  },
-  updated() {
-    this.getTasks();
-  },
+  }
 };
 </script>

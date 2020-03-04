@@ -123,7 +123,7 @@ def handle_tasks():
 @app.route('/ping', methods=['GET'])
 def ping_pong():
     """sanity check route"""
-    return jsonify('pong!')
+    return jsonify('pong')
 
 ### <<<------ end of section ------>>>
 
