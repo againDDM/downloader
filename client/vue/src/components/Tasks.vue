@@ -7,7 +7,7 @@
         <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Input url" aria-label="Input url" aria-describedby="basic-addon2" v-model="target" >
             <div class="input-group-append">
-                <span class="input-group-text btn btn-success btn-sm" id="basic-addon2" v-on:click="addTask()">Download</span>
+                <span class="input-group-text btn btn-success btn-sm" id="basic-addon2" v-on:click="addTask(target)">Download</span>
             </div>
         </div>
         <div class="text-center" style="height: 30px;">
@@ -68,6 +68,11 @@ export default {
   },
   methods: {
     addTask: async function (target) {
+      target = ( target || '' ).replace( /^\s+|\s+$/g, '' );
+      if ((typeof(target) == 'undefined') || !(target)) {
+        await this.getTasks();
+        return ;
+      }
       this.in_progress = true;
       try {
         let response = await fetch(
@@ -75,7 +80,7 @@ export default {
               method: 'POST',
               mode: 'cors',
               headers: {'Content-Type': 'application/json',},
-              body: JSON.stringify({url: this.target}),
+              body: JSON.stringify({url: target}),
             }
           );
         let json = await response.json();
@@ -83,7 +88,7 @@ export default {
         this.message.type = response.status === 200 ? "alert-success" : "alert-danger";
         this.target='';
       } catch (err) {
-        this.message.text = `FAIL: ${target}`;
+        this.message.text = `${err.message}`;
         this.message.type = "alert-danger";
       }
       this.message.show = true;
@@ -104,7 +109,7 @@ export default {
         this.message.text = `${json.result}: ${json.task}`;
         this.message.type = response.status === 200 ? "alert-warning" : "alert-danger";
       } catch (err) {
-        this.message.text = `FAIL: ${target}`;
+        this.message.text = `${err.message}`;
         this.message.type = "alert-danger";
       }
       this.message.show = true;

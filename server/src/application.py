@@ -116,9 +116,9 @@ def handle_tasks():
     if request.method == 'GET':
         return show_tasks(app.config['PAGE_LIMIT'])
     if request.method == 'POST':
-        return add_task(request.json['url'])
+        return add_task(request.json['url'].strip())
     elif request.method == 'DELETE':
-        return delete_task(request.json['url'])
+        return delete_task(request.json['url'].strip())
 
 ### <<<------ end of section ------>>>
 
