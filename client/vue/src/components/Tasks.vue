@@ -15,6 +15,9 @@
             <span class="sr-only">in progress...</span>
           </div>
           <div class="alert" v-bind:class="[message.type]" role="alert" v-else-if="message.show">
+            <button type="button" class="close" v-on:click="closeAlert()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
             {{ message.text }}
           </div>
         </div>
@@ -29,7 +32,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(task, index) in tasks" :key="index">
+            <tr v-bind:class="[task.table_class]" v-for="(task, index) in tasks" :key="index">
               <td>{{ task.url }}</td>
               <td>{{ task.status }}</td>
               <td>
@@ -44,8 +47,6 @@
 </template>
 
 <script>
-import Alert from './Alert';
-
 const path = 'http://localhost:5000/api/tasks/';
 export default {
   data() {
@@ -69,7 +70,7 @@ export default {
     addTask: async function (target) {
       this.in_progress = true;
       try {
-        const response = await fetch(
+        let response = await fetch(
             path, {
               method: 'POST',
               mode: 'cors',
@@ -77,9 +78,9 @@ export default {
               body: JSON.stringify({url: this.target}),
             }
           );
-        const json = await response.json();
+        let json = await response.json();
         this.message.text = `${json.result}: ${json.task}`;
-        this.message.type = "alert-success";
+        this.message.type = response.status === 200 ? "alert-success" : "alert-danger";
         this.target='';
       } catch (err) {
         this.message.text = `FAIL: ${target}`;
@@ -91,7 +92,7 @@ export default {
     deleteTask: async function (target) {
       this.in_progress = true;
       try {
-        const response = await fetch(
+        let response = await fetch(
             path, {
               method: 'DELETE',
               mode: 'cors',
@@ -99,9 +100,9 @@ export default {
               body: JSON.stringify({url: target}),
             }
           );
-        const json = await response.json();
+        let json = await response.json();
         this.message.text = `${json.result}: ${json.task}`;
-        this.message.type = "alert-warning";
+        this.message.type = response.status === 200 ? "alert-warning" : "alert-danger";
       } catch (err) {
         this.message.text = `FAIL: ${target}`;
         this.message.type = "alert-danger";
@@ -110,13 +111,36 @@ export default {
       this.in_progress = false;
     },
     getTasks: async function () {
-      const response = await fetch(path);
-      const json = await response.json();
-      this.tasks = json.tasks;
+      let response = await fetch(path);
+      let json = await response.json();
+      let tasks = [];
+      for (let task of json.tasks) {
+        switch(task.status) {
+          case 'WAIT':
+            task.table_class = "table-light";
+            break;
+          case 'SUCCESS':
+            task.table_class = "table-success";
+            break;
+          case 'FAILED':
+            task.table_class = "table-danger";
+            break;
+          case 'PROCESSED':
+            task.table_class = "table-primary";
+            break;
+          default:
+            task.table_class = "table-secondary";
+            break;
+        };
+        tasks.push(task);
+      };
+      this.tasks = tasks;
     },
-  },
-  components: {
-    alert: Alert,
+    closeAlert: function () {
+      this.message.show = false;
+      this.message.text = '';
+      this.message.type = "alert-secondary";
+    }
   },
   created() {
     this.getTasks();

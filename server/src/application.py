@@ -92,9 +92,9 @@ def add_task(url):
             "UPDATE tasks SET timestamp=CURRENT_TIMESTAMP WHERE url=?",
             (url,)
             )
-        return jsonify({'result': 'exist', 'task': url}), 201
+        return jsonify({'result': 'exist', 'task': url}), 200
     else:
-        return jsonify({'result': 'success', 'task': url}), 201
+        return jsonify({'result': 'success', 'task': url}), 200
     finally:
         db.commit()
 
@@ -119,11 +119,6 @@ def handle_tasks():
         return add_task(request.json['url'])
     elif request.method == 'DELETE':
         return delete_task(request.json['url'])
-
-@app.route('/ping', methods=['GET'])
-def ping_pong():
-    """sanity check route"""
-    return jsonify('pong')
 
 ### <<<------ end of section ------>>>
 
