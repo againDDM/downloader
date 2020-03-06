@@ -63,7 +63,7 @@
 </template>
 
 <script>
-const path = 'http://192.168.10.2:5000/api/tasks/';
+const path = 'http://localhost:5000/api/tasks/';
 export default {
   data() {
     return {

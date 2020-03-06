@@ -1,9 +1,7 @@
 FROM node:13-buster-slim as build-stage
-RUN mkdir -p /vue
-COPY vue/package*.json ./
-RUN npm install -l
 COPY vue /vue
 WORKDIR /vue
+RUN npm install -l
 RUN npm run build
 
 FROM nginx:1.17
