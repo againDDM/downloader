@@ -5,16 +5,27 @@
         <h3 class="text-center">Tasks</h3>
         <hr>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Input url" aria-label="Input url" aria-describedby="basic-addon2" v-model="target" >
+            <input type="text"
+                   class="form-control"
+                   placeholder="Input url"
+                   aria-label="Input url"
+                   aria-describedby="basic-addon2"
+                   v-model="target">
             <div class="input-group-append">
-                <span class="input-group-text btn btn-success btn-sm" id="basic-addon2" v-on:click="addTask(target)">Download</span>
+                <span class="input-group-text btn btn-success btn-sm"
+                      id="basic-addon2" v-on:click="addTask(target)">
+                  Download
+                </span>
             </div>
         </div>
-        <div class="text-center" style="height: 30px;">
+        <div class="text-center" style="height: 20px;">
           <div class="spinner-border" role="status" v-if="in_progress">
             <span class="sr-only">in progress...</span>
           </div>
-          <div class="alert" v-bind:class="[message.type]" role="alert" v-else-if="message.show">
+          <div class="alert"
+               v-bind:class="[message.type]"
+               role="alert"
+               v-else-if="message.show">
             <button type="button" class="close" v-on:click="closeAlert()" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -32,11 +43,16 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-bind:class="[task.table_class]" v-for="(task, index) in tasks" :key="index">
+            <tr v-bind:class="[task.table_class]"
+                v-for="(task, index) in tasks" :key="index">
               <td>{{ task.url }}</td>
               <td>{{ task.status }}</td>
               <td>
-                <button type="button" class="btn btn-warning btn-sm" v-on:click="deleteTask(task.url)">Delete</button>
+                <button type="button"
+                        class="btn btn-warning btn-sm"
+                        v-on:click="deleteTask(task.url)">
+                  Delete
+                </button>
               </td>
             </tr>
           </tbody>
@@ -47,7 +63,7 @@
 </template>
 
 <script>
-const path = 'http://localhost:5000/api/tasks/';
+const path = 'http://192.168.10.2:5000/api/tasks/';
 export default {
   data() {
     return {
@@ -56,99 +72,103 @@ export default {
       message: {
         show: false,
         text: 'TEST',
-        type: 'alert-secondary'
+        type: 'alert-secondary',
       },
-      target: ''
+      target: '',
     };
   },
   watch: {
-    'message.text': async function () {
+    'message.text': async function () { // eslint-disable-line
       await this.getTasks();
-    }
+    },
   },
   methods: {
-    addTask: async function (target) {
-      target = ( target || '' ).replace( /^\s+|\s+$/g, '' );
-      if ((typeof(target) == 'undefined') || !(target)) {
+    async addTask(target) {
+      const TheTarget = (target || '').replace(/^\s+|\s+$/g, '');
+      if ((typeof (target) === 'undefined') || !(TheTarget)) {
         await this.getTasks();
-        return ;
+        return;
       }
       this.in_progress = true;
       try {
-        let response = await fetch(
-            path, {
-              method: 'POST',
-              mode: 'cors',
-              headers: {'Content-Type': 'application/json',},
-              body: JSON.stringify({url: target}),
-            }
-          );
-        let json = await response.json();
+        const response = await fetch(
+          path, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: TheTarget }),
+          },
+        );
+        const json = await response.json();
         this.message.text = `${json.result}: ${json.task}`;
-        this.message.type = response.status === 200 ? "alert-success" : "alert-danger";
-        this.target='';
+        this.message.type = response.status === 200 ? 'alert-success' : 'alert-danger';
+        this.target = '';
       } catch (err) {
         this.message.text = `${err.message}`;
-        this.message.type = "alert-danger";
+        this.message.type = 'alert-danger';
       }
       this.message.show = true;
       this.in_progress = false;
     },
-    deleteTask: async function (target) {
+    async deleteTask(target) {
       this.in_progress = true;
       try {
-        let response = await fetch(
-            path, {
-              method: 'DELETE',
-              mode: 'cors',
-              headers: {'Content-Type': 'application/json',},
-              body: JSON.stringify({url: target}),
-            }
-          );
-        let json = await response.json();
+        const response = await fetch(
+          path, {
+            method: 'DELETE',
+            mode: 'cors',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: target }),
+          },
+        );
+        const json = await response.json();
         this.message.text = `${json.result}: ${json.task}`;
-        this.message.type = response.status === 200 ? "alert-warning" : "alert-danger";
+        this.message.type = response.status === 200 ? 'alert-warning' : 'alert-danger';
       } catch (err) {
         this.message.text = `${err.message}`;
-        this.message.type = "alert-danger";
+        this.message.type = 'alert-danger';
       }
       this.message.show = true;
       this.in_progress = false;
     },
-    getTasks: async function () {
-      let response = await fetch(path);
-      let json = await response.json();
-      let tasks = [];
-      for (let task of json.tasks) {
-        switch(task.status) {
+    async getTasks() {
+      const response = await fetch(path);
+      const json = await response.json();
+      const tasks = [];
+      for (const task of json.tasks) { // eslint-disable-line
+        switch (task.status) {
           case 'WAIT':
-            task.table_class = "table-light";
+            task.table_class = 'table-light';
             break;
           case 'SUCCESS':
-            task.table_class = "table-success";
+            task.table_class = 'table-success';
             break;
           case 'FAILED':
-            task.table_class = "table-danger";
+            task.table_class = 'table-danger';
             break;
           case 'PROCESSED':
-            task.table_class = "table-primary";
+            task.table_class = 'table-primary';
             break;
           default:
-            task.table_class = "table-secondary";
+            task.table_class = 'table-secondary';
             break;
-        };
+        }
         tasks.push(task);
-      };
+      }
       this.tasks = tasks;
     },
-    closeAlert: function () {
+    closeAlert() {
       this.message.show = false;
       this.message.text = '';
-      this.message.type = "alert-secondary";
-    }
+      this.message.type = 'alert-secondary';
+    },
   },
   created() {
     this.getTasks();
-  }
+  },
 };
 </script>

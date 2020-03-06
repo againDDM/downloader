@@ -1,11 +1,20 @@
 version: "2"
 
 services:
+  frontend:
+    build:
+      context: client
+    restart: always
+    tty: true
+    container_name: frontend
+    ports:
+    - "80:80"
+
   api-backend:
     build:
       context: server
     restart: always
     tty: true
-    container_name: application
+    container_name: api-backend
     ports:
     - "5000:5000"
