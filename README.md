@@ -1,2 +1,2 @@
 # downloader
-flask + vuejs application
+golang + vuejs application

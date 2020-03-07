@@ -63,7 +63,7 @@
 </template>
 
 <script>
-const path = 'http://localhost:5000/api/tasks/';
+const path = '/api/tasks/';
 export default {
   data() {
     return {

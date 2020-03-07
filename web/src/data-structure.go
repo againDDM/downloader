@@ -67,6 +67,13 @@ func deleteTaskHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func tasksHandle(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Add("Access-Control-Allow-Origin", httpConfig.cors)
+	w.Header().Set(
+		"Access-Control-Allow-Methods",
+		"GET, POST, DELETE, HEAD, OPTIONS",
+	)
+	w.Header().Set("Access-Control-Allow-Headers", "content-type")
 	switch r.Method {
 	case "OPTIONS":
 		func(w http.ResponseWriter, r *http.Request) {

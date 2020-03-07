@@ -63,19 +63,6 @@ var httpConfig = struct {
 	cors: os.Getenv("CORS_STRING"),
 }
 
-func handleCors(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Add("Access-Control-Allow-Origin", httpConfig.cors)
-		w.Header().Set(
-			"Access-Control-Allow-Methods",
-			"GET, POST, DELETE, HEAD, OPTIONS",
-		)
-		w.Header().Set("Access-Control-Allow-Headers", "content-type")
-		next.ServeHTTP(w, r)
-	})
-}
-
 func accessLogMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
@@ -102,10 +89,12 @@ func panicMiddleware(next http.Handler) http.Handler {
 func main() {
 	// initDatabase() #sometime later
 	mux := http.NewServeMux()
+
+	mux.Handle("/", http.FileServer(http.Dir("client")))
+
 	mux.HandleFunc("/api/tasks/", tasksHandle)
 
-	apiHandler := handleCors(mux)
-	apiHandler = accessLogMiddleware(apiHandler)
+	apiHandler := accessLogMiddleware(mux)
 	apiHandler = panicMiddleware(apiHandler)
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("HTTP_PORT"), apiHandler))

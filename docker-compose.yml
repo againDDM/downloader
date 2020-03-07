@@ -1,20 +1,15 @@
 version: "2"
 
 services:
-  frontend:
+  web:
     build:
-      context: client
-    restart: always
+      context: web
+      args: 
+        http_port: 80
+    environment:  
+      CORS_STRING: "*"
+    restart: "no"
     tty: true
-    container_name: frontend
+    container_name: web
     ports:
     - "80:80"
-
-  api-backend:
-    build:
-      context: server
-    restart: always
-    tty: true
-    container_name: api-backend
-    ports:
-    - "5000:5000"
