@@ -1,26 +1,21 @@
 #!/usr/bin/env python3
-import os
 import sqlite3
 import youtube_dl
 from flask import Flask, url_for, \
-    redirect, request, g, jsonify
-from flask_cors import CORS
-
-
+    redirect, request, g, jsonify, \
+    send_from_directory
 ###  >>> CONFIG SECTION <<<
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.update(
     dict(
-        DATABASE=os.getenv('SQLITE_PATH', 'app-db.sqlite3'),
+        DATABASE="/opt/db/app-db.sqlite3",
         DEBUG=True,   # will be switched to False
         PAGE_LIMIT=20,
     )
 )
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
-CORS(app, resources={r"/*": {"origins": "*"}})
-
 
 ### <<<------ end of section ------>>>
 
@@ -109,6 +104,15 @@ def delete_task(url):
 
 ### >>> ROUTER SECTION <<<
 ### --- api subsection ---
+
+@app.route('/')
+def root():
+    return send_from_directory('./', 'index.html')
+
+@app.route('/static/<path:path>')
+def send_js(path):
+    """Send client to user."""
+    return send_from_directory('./static', path)
 
 @app.route('/api/tasks/', methods=['GET', 'POST', 'DELETE'])
 def handle_tasks():

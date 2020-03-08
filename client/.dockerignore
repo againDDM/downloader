@@ -1,6 +1,0 @@
-vue/node_modules/*
-vue/dist/*
-vue/npm-debug.log*
-vue/yarn-debug.log*
-vue/yarn-error.log*
-vue/README.md

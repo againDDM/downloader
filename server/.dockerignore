@@ -2,3 +2,4 @@ README.md
 LICENSE
 .gitignore
 .git/*
+src/app-db.sqlite3

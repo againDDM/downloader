@@ -1,20 +1,16 @@
 version: "2"
 
 services:
-  frontend:
-    build:
-      context: client
-    restart: always
-    tty: true
-    container_name: frontend
-    ports:
-    - "80:80"
-
-  api-backend:
+  web-application:
     build:
       context: server
     restart: always
     tty: true
-    container_name: api-backend
+    container_name: downloader
     ports:
     - "5000:5000"
+    environment: 
+      DOWNLOADS_DIR: "/opt/downloads"
+    volumes: 
+      - "~/Downloads:/opt/downloads"
+      - "~/Downloads:/opt/db"
