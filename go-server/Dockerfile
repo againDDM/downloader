@@ -1,4 +1,4 @@
-FROM golang:1.14-stretch as go_builder
+FROM golang:1.14-buster as go-builder
 WORKDIR /go/src/app
 
 RUN go get github.com/lib/pq 
@@ -9,7 +9,7 @@ RUN go build -o /go/bin/app app
 FROM debian:10-slim
 LABEL mainteiner="Vasiliy Badaev <againDDM@gmail.com>"
 ARG app_dir="/opt/app"
-ARG http_port="8000"
+ARG http_port="5000"
 ENV HTTP_PORT=${http_port} \
     APP_DIR=${app_dir} \
     CORS_STRING="*" \

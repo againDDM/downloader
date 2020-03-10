@@ -12,7 +12,7 @@ services:
 
   api-backend:
     build:
-      context: server
+      context: go-server
     restart: always
     tty: true
     container_name: api-backend
