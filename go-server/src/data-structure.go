@@ -9,14 +9,19 @@ import (
 // Body is a data structure for marshaling convenience.
 type Body struct {
 	Result string `json:"result"`
-	Task   string `json:"task"`
-	Tasks  []Task `json:"tasks"`
+	Task   string `json:"task,omitempty"`
+	Tasks  []Task `json:"tasks,omitempty"`
 }
 
 // Task is a data structure for marshaling convenience.
 type Task struct {
-	Target string `json:"url"`
+	Target string `json:"target"`
 	Status string `json:"status"`
+}
+
+// Order is a data structure for marshaling convenience.
+type Order struct {
+	Target string `json:"target"`
 }
 
 func getTasksHandle(w http.ResponseWriter, r *http.Request) {

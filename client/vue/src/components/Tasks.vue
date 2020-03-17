@@ -37,7 +37,7 @@
         <table class="table table-hover">
           <thead>
             <tr>
-              <th scope="col">Url</th>
+              <th scope="col">Target</th>
               <th scope="col">Status</th>
               <th></th>
             </tr>
@@ -45,7 +45,7 @@
           <tbody>
             <tr v-bind:class="[task.table_class]"
                 v-for="(task, index) in tasks" :key="index">
-              <td>{{ task.url }}</td>
+              <td>{{ task.target }}</td>
               <td>{{ task.status }}</td>
               <td>
                 <button type="button"
@@ -98,7 +98,7 @@ export default {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ url: TheTarget }),
+            body: JSON.stringify({ target: TheTarget }),
           },
         );
         const json = await response.json();
@@ -122,7 +122,7 @@ export default {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ url: target }),
+            body: JSON.stringify({ target: target }),
           },
         );
         const json = await response.json();

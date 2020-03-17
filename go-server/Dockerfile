@@ -20,5 +20,5 @@ ENV HTTP_PORT=${http_port} \
     PGDATABASE="downloader"
 WORKDIR $app_dir
 EXPOSE ${http_port}
-COPY --from=go_builder /go/bin/app ${app_dir}/app
+COPY --from=go-builder /go/bin/app ${app_dir}/app
 CMD ["./app"]
