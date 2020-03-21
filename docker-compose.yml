@@ -1,5 +1,11 @@
 version: "2"
 
+volumes:
+  pg_data:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+
 services:
   frontend:
     build:
@@ -18,3 +24,29 @@ services:
     container_name: api-backend
     ports:
     - "5000:5000"
+    depends_on:
+    - db
+    links:
+    - "db:database"
+    environment: 
+      PGUSER: "postgres"
+      PGPASSWORD: "p0stgre$P@$s"
+      PGHOST: "database"
+      PGPORT: "5432"
+      PGDATABASE: "downloader"
+
+  db:
+    container_name: database
+    build:
+      context: database
+    restart: always
+    tty: true
+    volumes:
+    #  - "./database/init:/docker-entrypoint-initdb.d:ro"
+      - "pg_data:/var/lib/postgresql/data"
+    ports:
+    - "5432:5432/tcp"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "p0stgre$P@$s"
+      POSTGRES_DB: "downloader"
