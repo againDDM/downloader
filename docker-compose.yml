@@ -29,8 +29,8 @@ services:
     links:
     - "db:database"
     environment: 
-      PGUSER: "postgres"
-      PGPASSWORD: "p0stgre$P@$s"
+      PGUSER: postgres
+      PGPASSWORD: ololo-trololo
       PGHOST: "database"
       PGPORT: "5432"
       PGDATABASE: "downloader"
@@ -47,6 +47,6 @@ services:
     ports:
     - "5432:5432/tcp"
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "p0stgre$P@$s"
-      POSTGRES_DB: "downloader"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ololo-trololo
+      POSTGRES_DB: downloader

@@ -36,7 +36,7 @@ CREATE TABLE workers (
 
 CREATE TABLE w_tasks (
     m_id VARCHAR(16) NOT NULL,
-    w_id INTEGER DEFAULT NULL,
+    w_id INTEGER DEFAULT 1,
     status VARCHAR(16) NOT NULL DEFAULT 'WAIT',
     url VARCHAR(256) DEFAULT NULL,
     updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -65,5 +65,40 @@ CREATE TABLE u_roles (
         REFERENCES roles (r_id) MATCH SIMPLE
         ON UPDATE RESTRICT ON DELETE CASCADE
 );
+
+COMMIT;
+
+BEGIN;
+
+CREATE OR REPLACE FUNCTION template (
+
+) AS
+$BODY$
+BEGIN
+
+END;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION add_u_task (
+    in user_id integer, in movie_id text,
+    out task_status text
+) AS
+$BODY$ 
+BEGIN
+INSERT INTO u_tasks (u_id, m_id)
+VALUES (user_id, movie_id);
+SELECT status
+  INTO task_status
+  FROM w_tasks
+ WHERE m_id=movie_id;
+if task_status is NULL then
+  task_status='NEW';
+end if;
+END;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE;
+
+
 
 COMMIT;

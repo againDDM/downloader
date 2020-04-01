@@ -13,12 +13,6 @@ type Body struct {
 	Tasks  []Task `json:"tasks,omitempty"`
 }
 
-// Task is a data structure for marshaling convenience.
-type Task struct {
-	Target string `json:"target"`
-	Status string `json:"status"`
-}
-
 // Order is a data structure for marshaling convenience.
 type Order struct {
 	Target string `json:"target"`
