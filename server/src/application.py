@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import sqlite3
 import youtube_dl
-from flask import Flask, url_for, \
-    redirect, request, g, jsonify, \
+from flask import Flask, \
+    request, g, jsonify, \
     send_from_directory
-###  >>> CONFIG SECTION <<<
+#  >>> CONFIG SECTION <<<
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -12,16 +12,16 @@ app.config.update(
     dict(
         DATABASE="/opt/db/app-db.sqlite3",
         DEBUG=True,   # will be switched to False
-        PAGE_LIMIT=20,
+        PAGE_LIMIT=200,
     )
 )
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
-### <<<------ end of section ------>>>
+# <<<------ end of section ------>>>
 
 
-###  >>> DATABASE SECTION <<<
-### --- global subsection ---
+#  >>> DATABASE SECTION <<<
+# --- global subsection ---
 
 def connect_db():
     """Connects to the specified database."""
@@ -45,7 +45,8 @@ def close_db(error):
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
-### --- buisness logical subsection ---
+# --- buisness logical subsection ---
+
 
 def validate_task(url):
     try:
@@ -56,6 +57,7 @@ def validate_task(url):
     else:
         return None
 
+
 def show_tasks(limit):
     """Send last tasks in JSON format"""
     db = get_db()
@@ -63,14 +65,9 @@ def show_tasks(limit):
         'SELECT url, status FROM tasks ORDER BY timestamp DESC LIMIT ?',
         (limit,)
     )
-    tasks = [
-        {
-            "url": row[0],
-            "status": row[1],
-        } 
-            for row in cur.fetchall()
-              ]
+    tasks = [{"url": row[0], "status": row[1]} for row in cur.fetchall()]
     return jsonify({'result': 'success', 'tasks': tasks})
+
 
 def add_task(url):
     """Add new task to database with specified url,
@@ -93,6 +90,7 @@ def add_task(url):
     finally:
         db.commit()
 
+
 def delete_task(url):
     """Delete task specified by url from database."""
     db = get_db()
@@ -100,19 +98,22 @@ def delete_task(url):
     db.commit()
     return jsonify({'result': 'deleted', 'task': url}), 200
 
-### <<<------ end of section ------>>>
+# <<<------ end of section ------>>>
 
-### >>> ROUTER SECTION <<<
-### --- api subsection ---
+# >>> ROUTER SECTION <<<
+# --- api subsection ---
+
 
 @app.route('/')
 def root():
     return send_from_directory('./', 'index.html')
 
+
 @app.route('/static/<path:path>')
 def send_js(path):
     """Send client to user."""
     return send_from_directory('./static', path)
+
 
 @app.route('/api/tasks/', methods=['GET', 'POST', 'DELETE'])
 def handle_tasks():
@@ -124,7 +125,8 @@ def handle_tasks():
     elif request.method == 'DELETE':
         return delete_task(request.json['url'].strip())
 
-### <<<------ end of section ------>>>
+# <<<------ end of section ------>>>
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

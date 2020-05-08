@@ -11,7 +11,8 @@ WORKDIR $app_dir
 ENV DOWNLOADS_DIR="/opt/downloads" 
 RUN DEBIAN_FRONTEND=noninteractive \
     apt update && \
-    apt install sqlite3 -y && \
+    apt install sqlite3 -y \
+    ffmpeg && \
     pip3 install youtube-dl \
                  flack \
                  flask_cors \

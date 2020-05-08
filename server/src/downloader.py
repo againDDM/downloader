@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
+import time
 import sqlite3
 import youtube_dl
 
@@ -20,7 +21,7 @@ def get_task():
         return result[0]
 
 
-def report(target:str, result:bool) -> None:
+def report(target: str, result: bool) -> None:
     with sqlite3.connect("/opt/db/app-db.sqlite3") as db_connection:
         db_connection.execute(
             "UPDATE tasks SET status=? WHERE url=?",
@@ -28,7 +29,8 @@ def report(target:str, result:bool) -> None:
             )
         db_connection.commit()
 
-def download(target:str) -> bool:
+
+def download(target: str) -> bool:
     dow_dir = os.getenv('DOWNLOADS_DIR', '/opt/downloads')
     os.makedirs(dow_dir, mode=0o755, exist_ok=True)
     ydl_opts = {'outtmpl': '{}/%(title)s.%(ext)s'.format(dow_dir)}
@@ -44,10 +46,16 @@ def download(target:str) -> bool:
 
 
 def main():
-    task = get_task()
-    if not task:
-        return
-    report(task, download(task))
+    while True:
+        try:
+            task = get_task()
+            if not task:
+                time.sleep(5)
+                continue
+            report(task, download(task))
+        except Exception as err:
+            print(err.with_traceback())
+            time.sleep(60)
 
 
 if __name__ == "__main__":

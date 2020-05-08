@@ -11,9 +11,7 @@ sqlite3 \
   );"
 
 downloader () {
-  while sleep 1; do
     python3 downloader.py
-  done
 }
 
 downloader &
