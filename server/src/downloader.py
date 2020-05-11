@@ -3,7 +3,16 @@
 import os
 import time
 import sqlite3
+import logging
 import youtube_dl
+
+
+def init_logger(name: str = "downloader") -> logging.Logger:
+    "init_logger just init logger"
+    log_format = "%(asctime)s <%(name)s> [%(levelname)s] %(message)s"
+    log_level = logging.DEBUG
+    logging.basicConfig(level=log_level, format=log_format)
+    return logging.getLogger(name)
 
 
 def get_task():
@@ -33,13 +42,18 @@ def report(target: str, result: bool) -> None:
 def download(target: str) -> bool:
     dow_dir = os.getenv('DOWNLOADS_DIR', '/opt/downloads')
     os.makedirs(dow_dir, mode=0o755, exist_ok=True)
-    ydl_opts = {'outtmpl': '{}/%(title)s.%(ext)s'.format(dow_dir)}
+    ydl_opts = {
+        'outtmpl': '{}/%(title)s.%(ext)s'.format(dow_dir),
+        'format_resolution': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+        'logger': LOGGER,
+        }
     try:
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            print(f"My target is {target}")
+            LOGGER.info("My target is %s", target)
             ydl.download((target,))
+            LOGGER.info("Target -->%s<-- DONE", target)
     except Exception as err:
-        print(target, err)
+        LOGGER.error("%s :: %s", target, str(err))
         return False
     else:
         return True
@@ -59,4 +73,5 @@ def main():
 
 
 if __name__ == "__main__":
+    LOGGER = init_logger()
     main()
