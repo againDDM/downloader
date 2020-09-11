@@ -9,8 +9,8 @@ services:
     container_name: downloader
     ports:
     - "5000:5000"
-    environment: 
+    environment:
       DOWNLOADS_DIR: "/opt/downloads"
-    volumes: 
-      - "~/Downloads:/opt/downloads"
-      - "~/Downloads:/opt/db"
+    volumes: []
+      #- "~/Downloads:/opt/downloads"
+      #- "~/Downloads:/opt/db"
