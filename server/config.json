@@ -1,0 +1,25 @@
+{
+  "listeners": {
+    "*:5000": {
+      "pass": "routes"
+    }
+  },
+  "routes": [
+    {
+        "action": {
+            "share": "/opt/application/static/",
+            "fallback": {
+                "pass": "applications/downloader_application"
+            }
+         }
+    }
+],
+  "applications": {
+    "downloader_application": {
+      "type": "python",
+      "processes": 10,
+      "path": "/opt/application/",
+      "module": "wsgi"
+    }
+  }
+}
